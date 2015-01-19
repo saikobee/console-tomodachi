@@ -1,6 +1,14 @@
 {
   "name": "console-tomodachi",
+  "description": "A little friend in your console.",
   "version": "0.0.1",
+  "homepage": "https://github.com/saikobee/console-tomodachi",
+  "license": "MIT",
+  "author": "Brian Mock <brian@mockbrian.com> (http://mockbrian.com/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saikobee/console-tomodachi"
+  },
   "bin": {
     "tomo": "./src/console-tomodachi.js"
   },
@@ -8,7 +16,9 @@
     "postinstall": "./scripts/build-ansi.js",
     "build-ansi": "./scripts/build-ansi.js"
   },
+  "preferGlobal": true,
   "dependencies": {
+    "img-cat": "0.0.7",
     "lodash-node": "^2.4.1",
     "x256": "0.0.2"
   }
