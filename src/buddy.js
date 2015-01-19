@@ -5,6 +5,7 @@ var fs = require('fs');
 
 var UTF_8 = 'utf-8';
 
+var resource = require('./resource');
 var fg = require('./fg');
 var bg = require('./bg');
 var clamp = require('./clamp');
@@ -17,7 +18,7 @@ var RATE_HUNGER = time.minutes(0);
 var MAX_FULLNESS = 10;
 
 function appear() {
-    var f = path.join(
+    var f = resource(
         'ansi',
         this.type + '-' +
         this.emotion + '.ansi'
@@ -46,12 +47,6 @@ function feed() {
     this.fullness = MAX_FULLNESS;
     this.appear();
     say('Thanks for feeding me!');
-}
-
-function showBuddyState(buddy, state) {
-    var f = path.join('ansi', buddy + '-' + state + '.ansi');
-    var ansi = fs.readFileSync(f, UTF_8);
-    console.log(ansi);
 }
 
 function toJSON() {
