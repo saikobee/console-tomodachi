@@ -1,0 +1,14 @@
+{
+  "name": "console-tomodachi",
+  "version": "0.0.1",
+  "bin": {
+    "tomo": "./src/console-tomodachi.js"
+  },
+  "scripts": {
+    "build-ansi": "./scripts/build-ansi.js"
+  },
+  "dependencies": {
+    "lodash-node": "^2.4.1",
+    "x256": "0.0.2"
+  }
+}
