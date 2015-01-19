@@ -5,6 +5,7 @@
     "tomo": "./src/console-tomodachi.js"
   },
   "scripts": {
+    "postinstall": "./scripts/build-ansi.js",
     "build-ansi": "./scripts/build-ansi.js"
   },
   "dependencies": {

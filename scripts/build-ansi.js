@@ -14,6 +14,10 @@ function dirEach(dir, cb) {
     fs.readdirSync(dir).forEach(cb);
 }
 
+if (!fs.existsSync('ansi')) {
+    fs.mkdirSync('ansi');
+}
+
 dirEach('img', function(buddy) {
     dirEach(path.join('img', buddy), function(img) {
         var state = img.replace('.png', '');
