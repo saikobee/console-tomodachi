@@ -15,6 +15,7 @@ function reviver(key, val) {
 
 function save(data) {
     var newData = assign({}, data, {
+        version: 1,
         bedTime: new Date()
     });
     var json = JSON.stringify(newData, null, 4) + '\n';
