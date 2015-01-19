@@ -1,21 +1,23 @@
-// var DELTA_MIN = minutes(10);
-var DELTA_MIN = seconds(0.50);
+'use strict';
 
+function hours(n)   { return minutes(n * 60); }
 function minutes(n) { return seconds(n * 60); }
 function seconds(n) { return n * 1000; }
 
 var now = Object.freeze(new Date());
 
-function diff(t) {
-    return now - t;
-}
-
-function tooSoon(t) {
-    return diff(t) < DELTA_MIN;
+function atLeast(t) {
+    return {
+        since: function(d) {
+            return (now - d) >= t;
+        }
+    };
 }
 
 module.exports = {
-    diff: diff,
-    now: now,
-    tooSoon: tooSoon
+    hours: hours,
+    minutes: minutes,
+    seconds: seconds,
+    atLeast: atLeast,
+    now: now
 };

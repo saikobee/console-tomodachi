@@ -1,3 +1,5 @@
+'use strict';
+
 var fg_256 = require('./fg-256');
 
 module.exports = {

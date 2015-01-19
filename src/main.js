@@ -1,27 +1,16 @@
-var path = require('path');
-var fs = require('fs');
+'use strict';
 
-var imgcat = require('img-cat');
-
-var say = require('./say');
-var buddy = require('./buddy');
-var interleave = require('./interleave');
+var Buddy = require('./buddy');
+var state = require('./state');
 
 var UTF_8 = 'utf-8';
 var args = process.argv.slice(2);
 
-var handlers = {
+var helpNames = {
     help: showHelp,
     '-h': showHelp,
-    '--help': showHelp,
-    poke: buddy.poke,
-    feed: buddy.feed,
-    'default': buddy.appear
+    '--help': showHelp
 };
-
-function showDefault() {
-    showBuddyState('cat', 'happy');
-}
 
 function showHelp() {
     // TODO: Show useful help
@@ -31,15 +20,13 @@ function showHelp() {
 function main() {
     var cmd = args[0];
     var rest = args.slice(1);
-    var f;
-    buddy.awake();
-    if (cmd) {
-        f = handlers[cmd] || handlers.help;
+    var tomodachi = new Buddy(state.load());
+    if (!cmd || helpNames[cmd] || !tomodachi[cmd]) {
+        showHelp();
     } else {
-        f = handlers.default;
+        tomodachi[cmd]();
+        state.save(tomodachi.toJSON());
     }
-    f(rest);
-    buddy.sleep();
 }
 
 module.exports = main;

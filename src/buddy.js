@@ -1,4 +1,5 @@
-var random = require('lodash-node/modern/utilities/random.js');
+'use strict';
+
 var path = require('path');
 var fs = require('fs');
 
@@ -11,94 +12,39 @@ var say = require('./say');
 var time = require('./time');
 var state = require('./state');
 
-var data = {};
+var NAP_LENGTH = time.minutes(1);
+var RATE_HUNGER = time.minutes(0);
+var MAX_FULLNESS = 10;
 
-function sleep() {
-    state.save(data);
-}
-
-function awake() {
-    data = state.load();
-    // if (time.diff(data.lastPokeTime) > 1) {
-    //     data.fullness--;
-    //     data.happiness--;
-    // }
-    normalize(data);
-}
-
-function normalize(data) {
-    data.fullness = Math.max(0, data.fullness);
-    data.happiness = Math.max(0, data.happiness);
-}
-
-function worriedAboutBeingAnnoying() {
-    // return true;
-    // return false;
-    return time.tooSoon(data.lastPokeTime);
-    // return time.tooSoon(data.lastPokeTime)
-    //     || random(100) < 90;
-}
-
-function barGraph(name, n, max, color) {
-    var m = max - n;
-    var PX = '   ';
-    var s = '';
-    // s += '  ';
-    s += bg.GRAY;
-    s += fg.BLACK;
-    s += ' ';
-    s += name;
-    s += ' ';
-    s += bg.CLEAR;
-    s += ' ';
-    while (n --> 0) {
-        s += color;
-        s += PX;
-        // s += bg.CLEAR;
-        // s += ' ';
-    }
-    while (m --> 0) {
-        s += bg.GRAY;
-        s += PX;
-        // s += bg.CLEAR;
-        // s += ' ';
-    }
-    s += bg.CLEAR;
-    return s;
+function appear() {
+    var f = path.join(
+        'ansi',
+        this.type + '-' +
+        this.emotion + '.ansi'
+    );
+    console.log(fs.readFileSync(f, UTF_8));
+    this.sayStats();
 }
 
 function sayStats() {
-    var hap = barGraph('HAP', data.happiness, 10, bg.GREEN);
-    var ful = barGraph('FUL', data.fullness, 10, bg.ORANGE);
-
-    console.log(hap);
-    console.log(ful);
-
+    console.log('FULLNESS: ' + this.fullness + ' / ' + MAX_FULLNESS);
     console.log('');
-}
-
-function appear() {
-    var f = path.join('ansi', 'cat-happy.ansi');
-    console.log(fs.readFileSync(f, UTF_8));
-    sayStats();
 }
 
 function poke() {
-    // TODO: `poke` is the function that gets called often, such as in a shell
-    // pre-prompt function. It should have a small chance of making the buddy
-    // show up.
-    if (worriedAboutBeingAnnoying()) { return; }
-    console.log('');
-    sayStats();
-    // if (data.fullness < 2) { complain(); }
-    say('Nice to see you again!');
+    if (this.tired) {
+        return;
+    }
+    if (this.hungry) {
+        this.fullness = clamp(this.fullness - 1, 0, MAX_FULLNESS);
+    }
+    this.appear();
+    say('Hello!');
 }
 
 function feed() {
-    // TODO: `feed` should make the buddy show up eating some food, thanking
-    // you for it, and gaining HP or something.
-    data.fullness = 10;
-    data.happiness = 10;
+    this.fullness = MAX_FULLNESS;
+    this.appear();
     say('Thanks for feeding me!');
 }
 
@@ -108,10 +54,25 @@ function showBuddyState(buddy, state) {
     console.log(ansi);
 }
 
-module.exports = {
-    appear: appear,
-    poke: poke,
-    feed: feed,
-    sleep: sleep,
-    awake: awake
-};
+function toJSON() {
+    return {
+        fullness: this.fullness,
+        bedTime: this.bedTime,
+    };
+}
+
+function Buddy(data) {
+    this.type = 'cat';
+    this.emotion = 'happy';
+    this.fullness = data.fullness;
+    this.bedTime = data.bedTime;
+    this.hungry = time.atLeast(RATE_HUNGER).since(this.bedTime);
+    this.tired = !time.atLeast(NAP_LENGTH).since(this.bedTime);
+    this.poke = poke.bind(this);
+    this.feed = feed.bind(this);
+    this.appear = appear.bind(this);
+    this.sayStats = sayStats.bind(this);
+    this.toJSON = toJSON.bind(this);
+}
+
+module.exports = Buddy;

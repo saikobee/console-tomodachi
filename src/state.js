@@ -1,7 +1,10 @@
-var fs = require('fs');
+'use strict';
 
-var file = '/tmp/console-tomodachi.json';
-var utf8 = 'utf-8';
+var fs = require('fs');
+var assign = require('lodash-node/modern/objects/assign');
+
+var file = '/tmp/tomo.json';
+var UTF_8 = 'utf-8';
 
 function reviver(key, val) {
     if (/time$/i.test(key)) {
@@ -11,22 +14,24 @@ function reviver(key, val) {
 }
 
 function save(data) {
-    data.lastPokeTime = new Date();
-    var json = JSON.stringify(data, null, 4) + '\n';
-    fs.writeFileSync(file, json, utf8);
+    var newData = assign({}, data, {
+        bedTime: new Date()
+    });
+    var json = JSON.stringify(newData, null, 4) + '\n';
+    fs.writeFileSync(file, json, UTF_8);
 }
 
 function load() {
     try {
-        var json = fs.readFileSync(file, utf8);
+        var json = fs.readFileSync(file, UTF_8);
         var obj = JSON.parse(json, reviver);
         return obj;
     } catch (e) {
-        return {
-            lastPokeTime: new Date(),
-            happiness: 10,
+        return Object.freeze({
+            version: 1,
+            bedTime: new Date(),
             fullness: 10
-        };
+        });
     }
 }
 

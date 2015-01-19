@@ -1,3 +1,5 @@
+'use strict';
+
 var escaped = require('./escaped');
 var bg_256 = require('./bg-256');
 

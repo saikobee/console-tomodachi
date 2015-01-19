@@ -1,3 +1,5 @@
+'use strict';
+
 var fg = require('./fg');
 var bg = require('./bg');
 module.exports = function() {

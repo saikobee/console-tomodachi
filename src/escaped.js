@@ -1,4 +1,6 @@
+'use strict';
+
 module.exports = function escaped(s) {
     var s = [].join.call(arguments, ';');
-    return '\033[' + s + 'm';
+    return '\u001b[' + s + 'm';
 };

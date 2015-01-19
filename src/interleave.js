@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Joins two multiline chunks of text horizontally. Both parameters must
  * contain the same number of lines.
