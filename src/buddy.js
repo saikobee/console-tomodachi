@@ -1,18 +1,13 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
 
-var UTF_8 = 'utf-8';
-
 var resource = require('./resource');
-var fg = require('./fg');
-var bg = require('./bg');
 var clamp = require('./clamp');
 var say = require('./say');
 var time = require('./time');
-var state = require('./state');
 
+var UTF_8 = 'utf-8';
 var NAP_LENGTH = time.minutes(1);
 var RATE_HUNGER = time.minutes(0);
 var MAX_FULLNESS = 10;
@@ -59,10 +54,13 @@ function toJSON() {
 function Buddy(data) {
     this.type = 'cat';
     this.emotion = 'happy';
+
     this.fullness = data.fullness;
     this.bedTime = data.bedTime;
+
     this.hungry = time.atLeast(RATE_HUNGER).since(this.bedTime);
     this.tired = !time.atLeast(NAP_LENGTH).since(this.bedTime);
+
     this.poke = poke.bind(this);
     this.feed = feed.bind(this);
     this.appear = appear.bind(this);
