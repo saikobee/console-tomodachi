@@ -1,9 +1,18 @@
 'use strict';
 
+var path = require('path');
+var os = require('os');
 var fs = require('fs');
 var assign = require('lodash-node/modern/objects/assign');
 
-var file = '/tmp/tomo.json';
+var env = process.env;
+
+var HOME =
+    env.USERPROFILE ||
+    env.HOME ||
+    os.tmpdir();
+
+var file = path.join(HOME, '.tomo.json');
 var UTF_8 = 'utf-8';
 
 function reviver(key, val) {

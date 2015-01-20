@@ -1,0 +1,23 @@
+{
+    "playing": [
+        "I love this game",
+        "We should play chess next time",
+        "Are you any good at Sudoku?",
+        "This is fun"
+    ],
+    "full": [
+        "That was delicious!",
+        "Mmmm... thanks",
+        "Yummy!"
+    ],
+    "hungry": [
+        "Feed me!",
+        "Food?",
+        "I'm hungry"
+    ],
+    "random": [
+        "Hello!",
+        "How about the weather?",
+        "Nice to see you!"
+    ]
+}

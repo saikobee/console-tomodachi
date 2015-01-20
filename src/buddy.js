@@ -1,7 +1,11 @@
 'use strict';
 
 var fs = require('fs');
+var sample = require('lodash-node/modern/collections/sample');
 
+var leftPad = require('./left-pad');
+var bg = require('./bg');
+var fg = require('./fg');
 var resource = require('./resource');
 var clamp = require('./clamp');
 var say = require('./say');
@@ -9,7 +13,7 @@ var time = require('./time');
 
 var UTF_8 = 'utf-8';
 var NAP_LENGTH = time.minutes(1);
-var RATE_HUNGER = time.minutes(0);
+var RATE_HUNGER = time.minutes(1);
 var MAX_FULLNESS = 10;
 
 function appear() {
@@ -18,13 +22,15 @@ function appear() {
         this.type + '-' +
         this.emotion + '.ansi'
     );
-    console.log(fs.readFileSync(f, UTF_8));
-    this.sayStats();
+    var img = fs.readFileSync(f, UTF_8);
+    console.log();
+    console.log(leftPad('  ', img));
 }
 
-function sayStats() {
-    console.log('FULLNESS: ' + this.fullness + ' / ' + MAX_FULLNESS);
-    console.log('');
+function saySomething(category) {
+    var data = require('../assets/phrases/default.json');
+    this.appear();
+    say(sample(data[category]));
 }
 
 function poke() {
@@ -34,14 +40,16 @@ function poke() {
     if (this.hungry) {
         this.fullness = clamp(this.fullness - 1, 0, MAX_FULLNESS);
     }
-    this.appear();
-    say('Hello!');
+    if (this.fullness < 9) {
+        this.saySomething('hungry');
+    } else {
+        this.saySomething('random');
+    }
 }
 
 function feed() {
     this.fullness = MAX_FULLNESS;
-    this.appear();
-    say('Thanks for feeding me!');
+    this.saySomething('full');
 }
 
 function toJSON() {
@@ -64,7 +72,7 @@ function Buddy(data) {
     this.poke = poke.bind(this);
     this.feed = feed.bind(this);
     this.appear = appear.bind(this);
-    this.sayStats = sayStats.bind(this);
+    this.saySomething = saySomething.bind(this);
     this.toJSON = toJSON.bind(this);
 }
 
